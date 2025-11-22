@@ -1,9 +1,8 @@
-"""
-High School Management System API
+#High School Management System API
 
-A super simple FastAPI application that allows students to view and sign up
-for extracurricular activities at Mergington High School.
-"""
+#A super simple FastAPI application that allows students to view and sign up
+#for extracurricular activities at Mergington High School.
+
 
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -42,11 +41,13 @@ activities = {
     # Sports related activities
     "Soccer Team": {
         "description": "Join the school soccer team and compete in matches",
-        "schedule": "Wednesdays, 4:00 PM - 5:30 PM",
-        "max_participants": 18,
-        "participants": ["lucas@mergington.edu", "mia@mergington.edu"]
-    },
-    "Basketball Club": {
+
+        """
+        High School Management System API
+
+        A super simple FastAPI application that allows students to view and sign up
+        for extracurricular activities at Mergington High School.
+        """
         "description": "Practice basketball skills and play friendly games",
         "schedule": "Thursdays, 3:30 PM - 5:00 PM",
         "max_participants": 15,
@@ -108,3 +109,13 @@ def signup_for_activity(activity_name: str, email: str):
     # Add student
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
+@app.post("/activities/{activity_name}/unregister")
+def unregister_participant(activity_name: str, email: str):
+    """Remove a student from an activity"""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+    activity = activities[activity_name]
+    if email not in activity["participants"]:
+        raise HTTPException(status_code=404, detail="Participant not found in this activity")
+    activity["participants"].remove(email)
+    return {"message": "Participant removed"}
